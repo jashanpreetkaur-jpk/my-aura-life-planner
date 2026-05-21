@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Aura Life Planner ✦</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════ -->
+<div id="login-screen">
+    <div class="login-orb orb1"></div>
+    <div class="login-orb orb2"></div>
+    <div class="login-orb orb3"></div>
+
+    <!-- MAIN LOGIN PANEL -->
+    <div class="login-container" id="loginPanel">
+        <div class="login-logo">
+            <span class="login-star">✦</span>
+            <h1>My Aura Life Planner</h1>
+        </div>
+        <div class="login-quote" id="loginQuote">"Every new beginning comes from some other beginning's end."</div>
+
+        <div class="login-form-group">
+            <label class="login-label">Username</label>
+            <input type="text" id="loginUsername" class="login-input" placeholder="Enter your username" autocomplete="off">
+        </div>
+        <div class="login-form-group">
+            <label class="login-label">Password</label>
+            <div class="login-pw-wrap">
+                <input type="password" id="loginPassword" class="login-input" placeholder="Enter your password" autocomplete="off">
+                <button class="pw-eye-btn" onclick="togglePwVis('loginPassword', this)" type="button"><i class="fas fa-eye"></i></button>
+            </div>
+        </div>
+
+        <div class="login-error" id="loginError" style="display:none;"></div>
+
+        <button class="login-btn ripple" onclick="login()">
+            <span class="btn-text">✦ Begin Your Journey ✦</span>
+            <span class="btn-shimmer"></span>
+        </button>
+
+        <div class="login-links">
+            <button class="login-link-btn" onclick="showPanel('forgotPanel')">🔑 Forgot Password?</button>
+            <button class="login-link-btn" onclick="showPanel('registerPanel')">🌱 New Journey (Register)</button>
+        </div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div class="login-container" id="registerPanel" style="display:none;">
+        <div class="login-logo">
+            <span class="login-star">🌱</span>
+            <h1>Start Fresh Journey</h1>
+        </div>
+        <p class="login-sub-text">Create your account to begin your aura journey.</p>
+
+        <div class="login-form-group">
+            <label class="login-label">Username</label>
+            <input type="text" id="regUsername" class="login-input" placeholder="Choose a username">
+        </div>
+        <div class="login-form-group">
+            <label class="login-label">Password</label>
+            <div class="login-pw-wrap">
+                <input type="password" id="regPassword" class="login-input" placeholder="Create a password">
+                <button class="pw-eye-btn" onclick="togglePwVis('regPassword', this)" type="button"><i class="fas fa-eye"></i></button>
+            </div>
+        </div>
+        <div class="login-form-group">
+            <label class="login-label">Confirm Password</label>
+            <input type="password" id="regConfirm" class="login-input" placeholder="Confirm your password">
+        </div>
+
+        <p class="login-sub-text" style="margin-top:1rem;">🔐 Set 3 Security Questions (for password recovery)</p>
+
+        <div class="security-q-block" id="secSetup">
+            <div class="sq-row" id="sqRow1">
+                <input type="text" class="login-input sq-q" placeholder="Security Question 1" id="sq1q">
+                <input type="text" class="login-input sq-a" placeholder="Answer" id="sq1a">
+            </div>
+            <div class="sq-row" id="sqRow2">
+                <input type="text" class="login-input sq-q" placeholder="Security Question 2" id="sq2q">
+                <input type="text" class="login-input sq-a" placeholder="Answer" id="sq2a">
+            </div>
+            <div class="sq-row" id="sqRow3">
+                <input type="text" class="login-input sq-q" placeholder="Security Question 3" id="sq3q">
+                <input type="text" class="login-input sq-a" placeholder="Answer" id="sq3a">
+            </div>
+        </div>
+
+        <div class="login-error" id="regError" style="display:none;"></div>
+        <button class="login-btn ripple" onclick="registerUser()">
+            <span class="btn-text">✦ Create My Account ✦</span>
+        </button>
+        <div class="login-links">
+            <button class="login-link-btn" onclick="showPanel('loginPanel')">← Back to Login</button>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD PANEL -->
+    <div class="login-container" id="forgotPanel" style="display:none;">
+        <div class="login-logo">
+            <span class="login-star">🔑</span>
+            <h1>Recover Account</h1>
+        </div>
+
+        <!-- Step 1: Enter username -->
+        <div id="forgotStep1">
+            <p class="login-sub-text">Enter your username to retrieve your security questions.</p>
+            <div class="login-form-group">
+                <label class="login-label">Username</label>
+                <input type="text" id="forgotUsername" class="login-input" placeholder="Your username">
+            </div>
+            <div class="login-error" id="forgotError1" style="display:none;"></div>
+            <button class="login-btn ripple" onclick="forgotStep1()"><span class="btn-text">Find My Account</span></button>
+        </div>
+
+        <!-- Step 2: Answer questions -->
+        <div id="forgotStep2" style="display:none;">
+            <p class="login-sub-text">Answer all 3 security questions correctly.</p>
+            <div id="forgotQuestionsBlock"></div>
+            <div class="login-error" id="forgotError2" style="display:none;"></div>
+            <button class="login-btn ripple" onclick="forgotStep2()"><span class="btn-text">Verify Answers</span></button>
+        </div>
+
+        <!-- Step 3: Reset password -->
+        <div id="forgotStep3" style="display:none;">
+            <p class="login-sub-text" style="color:#a0ffa0;">✅ Identity verified! Set your new password.</p>
+            <div class="login-form-group">
+                <label class="login-label">New Password</label>
+                <input type="password" id="newPassword" class="login-input" placeholder="New password">
+            </div>
+            <div class="login-form-group">
+                <label class="login-label">Confirm New Password</label>
+                <input type="password" id="confirmNewPassword" class="login-input" placeholder="Confirm new password">
+            </div>
+            <div class="login-error" id="forgotError3" style="display:none;"></div>
+            <button class="login-btn ripple" onclick="forgotStep3()"><span class="btn-text">Reset Password</span></button>
+        </div>
+
+        <div class="login-links">
+            <button class="login-link-btn" onclick="showPanel('loginPanel')">← Back to Login</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════ -->
+<div id="main-app">
+    <header>
+        <div class="logo">✦ My Aura Life Planner</div>
+        <div class="header-right">
+            <span id="headerDate"></span>
+            <span class="user-badge" id="headerUsername">User</span>
+        </div>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" onclick="showSection('dashboard')"><i class="fas fa-home"></i> Dashboard</button>
+        <button class="nav-btn" onclick="showSection('todo')"><i class="fas fa-tasks"></i> To-Do</button>
+        <button class="nav-btn" onclick="showSection('timetable')"><i class="fas fa-clock"></i> TimeTable</button>
+        <button class="nav-btn" onclick="showSection('timer')"><i class="fas fa-stopwatch"></i> Timer</button>
+        <button class="nav-btn" onclick="showSection('weekly')"><i class="fas fa-file-pdf"></i> Weekly PDF</button>
+        <button class="nav-btn" onclick="showSection('calendar')"><i class="fas fa-calendar"></i> Calendar</button>
+        <button class="nav-btn" onclick="showSection('yearly')"><i class="fas fa-chart-line"></i> Yearly</button>
+        <button class="nav-btn" onclick="showSection('motivation')"><i class="fas fa-star"></i> Motivation</button>
+        <button class="nav-btn" onclick="showSection('chatbot')"><i class="fas fa-robot"></i> Chatbot</button>
+        <button class="nav-btn" onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</button>
+    </nav>
+
+    <div class="container">
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section active">
+            <div class="sec-head">
+                <h2>Welcome Back, <span id="userName">Planner</span> ✦</h2>
+                <p>Here's your productivity snapshot for today.</p>
+            </div>
+            <div class="card">
+                <div class="stat-row">
+                    <span class="stat-label">Today's Overall Progress</span>
+                    <span class="stat-val" id="dailyPercText">0%</span>
+                </div>
+                <div class="prog-wrap"><div class="prog-bar" id="dailyBar" style="width:0%"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;">
+                    <p class="moti-sub" id="dailyMotMsg">Add tasks to start your journey!</p>
+                    <button class="btn btn-sm btn-ghost ripple" onclick="refreshDashboardQuote()"><i class="fas fa-sync-alt"></i> New Quote</button>
+                </div>
+            </div>
+            <div class="grid3">
+                <div class="card-sm stat-box"><div class="stat-icon">📋</div><div class="stat-num" id="statTotal">0</div><div class="stat-desc">Total Tasks</div></div>
+                <div class="card-sm stat-box"><div class="stat-icon">✅</div><div class="stat-num green" id="statDone">0</div><div class="stat-desc">Completed</div></div>
+                <div class="card-sm stat-box"><div class="stat-icon">⏳</div><div class="stat-num orange" id="statPending">0</div><div class="stat-desc">Pending</div></div>
+            </div>
+            <div class="moti-box">
+                <div class="moti-emoji floating" id="dashEmoji">🌸</div>
+                <div class="moti-msg" id="dashQuote">Loading your aura message...</div>
+                <div class="moti-sub" id="dashSub"></div>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Recent Tasks</h3>
+                <div id="recentTasks"></div>
+            </div>
+        </section>
+
+        <!-- TO-DO -->
+        <section id="todo" class="section">
+            <div class="sec-head">
+                <h2><span>Smart</span> To-Do List</h2>
+                <p>Manage your daily tasks with priority</p>
+            </div>
+            <div class="card">
+                <div class="input-row">
+                    <input type="text" id="todoInput" placeholder="Add a new task..." onkeypress="if(event.key==='Enter') addTodo()">
+                    <select id="todoPriority">
+                        <option value="high">🔴 High</option>
+                        <option value="medium" selected>🟠 Medium</option>
+                        <option value="low">🟢 Low</option>
+                    </select>
+                    <button class="btn btn-primary ripple" onclick="addTodo()">+ Add</button>
+                </div>
+                <div class="filter-row">
+                    <button class="btn btn-sm btn-ghost filter-active" onclick="filterTodo('all', this)">All</button>
+                    <button class="btn btn-sm btn-ghost" onclick="filterTodo('pending', this)">Pending</button>
+                    <button class="btn btn-sm btn-ghost" onclick="filterTodo('done', this)">Done</button>
+                    <button class="btn btn-sm btn-danger" onclick="clearDoneTodos()">Clear Done</button>
+                </div>
+            </div>
+            <div id="todoList"></div>
+            <div id="todoEmpty" class="empty-msg" style="display:none;">No tasks to show</div>
+        </section>
+
+        <!-- TIMETABLE — FIXED: text inputs for time, AM/PM selector separate -->
+        <section id="timetable" class="section">
+            <div class="sec-head">
+                <h2>Daily <span>TimeTable</span></h2>
+                <p>Plan your day — reminders will notify you at the set time</p>
+            </div>
+            <div class="card">
+                <div class="timetable-add-grid">
+                    <div class="time-picker-group">
+                        <label class="tt-label">Hour</label>
+                        <select id="slotHour" class="tt-select">
+                            <option value="01">1</option><option value="02">2</option>
+                            <option value="03">3</option><option value="04">4</option>
+                            <option value="05">5</option><option value="06">6</option>
+                            <option value="07">7</option><option value="08">8</option>
+                            <option value="09" selected>9</option><option value="10">10</option>
+                            <option value="11">11</option><option value="12">12</option>
+                        </select>
+                    </div>
+                    <div class="time-picker-group">
+                        <label class="tt-label">Minute</label>
+                        <select id="slotMinute" class="tt-select">
+                            <option value="00" selected>00</option><option value="15">15</option>
+                            <option value="30">30</option><option value="45">45</option>
+                        </select>
+                    </div>
+                    <div class="time-picker-group">
+                        <label class="tt-label">AM / PM</label>
+                        <select id="slotAmPm" class="tt-select">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
+                    <div class="time-picker-group" style="flex:2;">
+                        <label class="tt-label">Activity</label>
+                        <input type="text" id="slotActivity" placeholder="Activity name..." onkeypress="if(event.key==='Enter') addSlot()">
+                    </div>
+                    <div class="time-picker-group">
+                        <label class="tt-label">Period</label>
+                        <select id="slotPeriod" class="tt-select">
+                            <option value="Morning">🌅 Morning</option>
+                            <option value="Afternoon">☀️ Afternoon</option>
+                            <option value="Evening">🌆 Evening</option>
+                            <option value="Night">🌙 Night</option>
+                        </select>
+                    </div>
+                    <div class="time-picker-group" style="align-self:flex-end;">
+                        <button class="btn btn-primary ripple" onclick="addSlot()">+ Add Slot</button>
+                    </div>
+                </div>
+                <p class="tt-info-msg">🔔 You'll receive a browser notification at the set time for each activity.</p>
+            </div>
+            <div id="slotList"></div>
+            <div id="slotEmpty" class="empty-msg">No time slots added yet</div>
+        </section>
+
+        <!-- TIMER -->
+        <section id="timer" class="section">
+            <div class="sec-head">
+                <h2>Focus <span>Timer & Clock</span></h2>
+                <p>Manage your focus sessions and track time</p>
+            </div>
+            <div class="card timer-clock-card">
+                <div class="live-clock" id="liveClock">00:00:00</div>
+                <div class="live-date" id="liveDate">Loading...</div>
+            </div>
+            <div class="card">
+                <h3 class="card-title">⏱️ Focus Timer</h3>
+                <div class="timer-mode-row">
+                    <button class="timer-mode-btn active" id="workModeBtn" onclick="setTimerMode('work')">🎯 Work (25 min)</button>
+                    <button class="timer-mode-btn" id="breakModeBtn" onclick="setTimerMode('break')">☕ Break (5 min)</button>
+                </div>
+                <div class="timer-display-wrap">
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    <div class="timer-mode-label" id="timerModeLabel">Work Mode</div>
+                </div>
+                <div class="custom-timer-row">
+                    <label class="profile-label">Custom Time (minutes):</label>
+                    <div class="input-row" style="margin-top:0.4rem;margin-bottom:0;">
+                        <input type="number" id="customMinutes" placeholder="e.g. 10, 30, 45" min="1" max="180" style="max-width:160px;">
+                        <button class="btn btn-sm btn-ghost ripple" onclick="applyCustomTimer()"><i class="fas fa-check"></i> Apply</button>
+                    </div>
+                </div>
+                <div class="timer-controls">
+                    <button class="btn btn-primary ripple" id="timerStartBtn" onclick="startTimer()"><i class="fas fa-play"></i> Start</button>
+                    <button class="btn btn-ghost ripple" id="timerPauseBtn" onclick="pauseTimer()" disabled><i class="fas fa-pause"></i> Pause</button>
+                    <button class="btn btn-ghost ripple" onclick="resetTimer()"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- WEEKLY PDF -->
+        <section id="weekly" class="section">
+            <div class="sec-head">
+                <h2><span>Weekly</span> PDF Reports</h2>
+                <p>Your weekly progress reports saved here</p>
+            </div>
+            <div class="card" style="margin-bottom:1.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <h3 class="card-title">Generate Weekly Report</h3>
+                    <button class="btn btn-primary ripple" onclick="generateWeeklyReport()"><i class="fas fa-file-pdf"></i> Generate PDF</button>
+                </div>
+                <p class="moti-sub" style="margin-top:0.5rem;">Every Monday a popup will remind you to generate your report.</p>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Your Reports</h3>
+                <div id="reportsList" class="reports-grid"></div>
+                <div id="reportsEmpty" class="empty-msg">No reports yet. Generate your first report!</div>
+            </div>
+        </section>
+
+        <!-- CALENDAR -->
+        <section id="calendar" class="section">
+            <div class="sec-head">
+                <h2><span>Calendar</span> Overview</h2>
+                <p>Track your daily progress throughout the year</p>
+            </div>
+            <div class="card" style="margin-bottom:1.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <button class="btn btn-sm btn-ghost ripple" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <h3 id="calendarMonthYear" style="font-family:var(--font-display);color:var(--primary);">May 2024</h3>
+                    <button class="btn btn-sm btn-ghost ripple" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+                    <button class="btn btn-sm btn-ghost ripple" onclick="toggleYearView()" id="yearViewBtn"><i class="fas fa-calendar-alt"></i> Show Year View</button>
+                </div>
+            </div>
+            <div id="monthView">
+                <div class="calendar-weekdays"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div>
+                <div id="calendarGrid" class="calendar-grid"></div>
+                <div class="card" style="margin-top:1.5rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span class="stat-label">Monthly Overall Progress</span>
+                        <span class="stat-val" id="monthProgress">0%</span>
+                    </div>
+                    <div class="prog-wrap" style="margin:0.5rem 0;"><div class="prog-bar" id="monthBar" style="width:0%"></div></div>
+                    <p class="moti-sub" id="monthQuote">Loading monthly motivation...</p>
+                </div>
+            </div>
+            <div id="yearView" style="display:none;"><div class="year-grid" id="yearGrid"></div></div>
+        </section>
+
+        <!-- YEARLY -->
+        <section id="yearly" class="section">
+            <div class="sec-head">
+                <h2><span>Yearly</span> Journey</h2>
+                <p>Your long-term growth and goals</p>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Year Progress — <span id="currentYear"></span></h3>
+                <div class="stat-row"><span class="stat-label">Year Completion</span><span class="stat-val" id="yearPercText">0%</span></div>
+                <div class="prog-wrap"><div class="prog-bar green" id="yearBar" style="width:0%"></div></div>
+                <p class="moti-sub" id="yearDaysLeft"></p>
+            </div>
+            <div class="grid2">
+                <div class="card">
+                    <h3 class="card-title">Yearly Goals & Dreams</h3>
+                    <div class="input-row" style="margin-bottom:1rem;">
+                        <input type="text" id="yearGoalInput" placeholder="Add a goal or dream...">
+                        <button class="btn btn-primary ripple" onclick="addYearlyGoal()">Add</button>
+                    </div>
+                    <div id="yearlyGoalsList"></div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Highlights</h3>
+                    <div class="input-row" style="margin-bottom:1rem;">
+                        <input type="text" id="highlightInput" placeholder="Add a highlight...">
+                        <button class="btn btn-primary ripple" onclick="addHighlight()">Add</button>
+                    </div>
+                    <div id="highlightList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOTIVATION -->
+        <section id="motivation" class="section">
+            <div class="sec-head">
+                <h2>Your <span>Aura</span> Boost</h2>
+                <p>Personalized motivation based on your progress</p>
+            </div>
+            <div class="moti-box big-moti">
+                <div class="moti-emoji floating" id="bigEmoji">✨</div>
+                <div class="moti-msg" id="bigQuote">Loading...</div>
+                <div class="moti-sub" id="bigSub"></div>
+            </div>
+            <div style="text-align:center;margin-bottom:2rem;">
+                <button class="btn btn-primary ripple" onclick="refreshMotivation()"><i class="fas fa-sync-alt"></i> New Message</button>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Life Reminders</h3>
+                <div class="reminders-grid" id="remindersGrid"></div>
+            </div>
+        </section>
+
+        <!-- CHATBOT -->
+        <section id="chatbot" class="section">
+            <div class="sec-head">
+                <h2>Aura <span>Assistant</span></h2>
+                <p>Your AI-powered chatbot for encouragement & advice</p>
+            </div>
+            <div class="chat-window" id="chatWindow">
+                <div class="chat-msg bot">👋 Hi! I'm your Aura Assistant. How are you feeling today?</div>
+            </div>
+            <div id="typingIndicator" class="typing-indicator" style="display:none;">
+                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                <span style="margin-left:0.5rem;color:var(--muted);font-size:0.85rem;">Bot is thinking...</span>
+            </div>
+            <div class="chat-input-row">
+                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChat()">
+                <button class="btn btn-primary ripple" onclick="sendChat()">Send</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <span class="stat-label">Quick Replies</span>
+                <button class="btn btn-sm btn-ghost ripple" onclick="clearChat()"><i class="fas fa-plus-circle"></i> New Chat</button>
+            </div>
+            <div class="quick-replies">
+                <button class="btn btn-sm btn-ghost ripple" onclick="quickChat('I feel stressed')">😰 Stressed</button>
+                <button class="btn btn-sm btn-ghost ripple" onclick="quickChat('I feel great')">😊 Great</button>
+                <button class="btn btn-sm btn-ghost ripple" onclick="quickChat('I need motivation')">🔥 Motivation</button>
+                <button class="btn btn-sm btn-ghost ripple" onclick="quickChat('I failed today')">😞 Failed</button>
+                <button class="btn btn-sm btn-ghost ripple" onclick="quickChat('Productivity tips')">📈 Tips</button>
+                <button class="btn btn-sm btn-ghost ripple" onclick="quickChat('Good morning')">🌅 Morning</button>
+                <button class="btn btn-sm btn-ghost ripple" onclick="quickChat('Good night')">🌙 Night</button>
+            </div>
+        </section>
+
+        <!-- PROFILE -->
+        <section id="profile" class="section">
+            <div class="sec-head">
+                <h2>Your <span>Profile</span></h2>
+                <p>Manage your account and preferences</p>
+            </div>
+            <div class="grid2">
+                <!-- LEFT: Profile Info -->
+                <div class="card">
+                    <h3 class="card-title">Profile Info</h3>
+
+                    <!-- Profile Photo with view/edit/remove options -->
+                    <div class="profile-photo-section">
+                        <div class="profile-photo-wrap" id="photoWrap" title="Double-click to see options">
+                            <img id="profilePhotoImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                            <div class="profile-photo-letter" id="profilePhotoLetter">U</div>
+                            <div class="profile-photo-overlay" onclick="togglePhotoMenu()">
+                                <i class="fas fa-camera"></i>
+                                <span>Options</span>
+                            </div>
+                        </div>
+                        <input type="file" id="photoUpload" accept="image/*" style="display:none;" onchange="uploadProfilePhoto(event)">
+
+                        <!-- Photo options menu -->
+                        <div class="photo-menu" id="photoMenu" style="display:none;">
+                            <button class="photo-menu-btn" onclick="viewProfilePhoto()"><i class="fas fa-eye"></i> View Photo</button>
+                            <button class="photo-menu-btn" onclick="document.getElementById('photoUpload').click();hidePhotoMenu()"><i class="fas fa-edit"></i> Change Photo</button>
+                            <button class="photo-menu-btn danger" onclick="removeProfilePhoto()"><i class="fas fa-trash"></i> Remove Photo</button>
+                            <button class="photo-menu-btn" onclick="hidePhotoMenu()"><i class="fas fa-times"></i> Cancel</button>
+                        </div>
+                        <p class="photo-hint" id="photoHint">Click photo to see options</p>
+                    </div>
+
+                    <div style="margin-top:1.2rem;">
+                        <div class="profile-field-row">
+                            <div class="profile-field-info">
+                                <span class="profile-label">👤 Username</span>
+                                <span class="profile-value" id="profileUsername">User</span>
+                            </div>
+                        </div>
+                        <div class="profile-field-row">
+                            <div class="profile-field-info">
+                                <span class="profile-label">📅 Join Date</span>
+                                <span class="profile-value" id="profileJoinDate">Loading...</span>
+                            </div>
+                        </div>
+                        <!-- Email -->
+                        <div class="profile-field-row">
+                            <div class="profile-field-info">
+                                <span class="profile-label">✉️ Email</span>
+                                <span class="profile-value" id="profileEmailDisplay">Not set</span>
+                            </div>
+                            <div class="profile-field-actions">
+                                <button class="pf-btn edit" onclick="editProfileField('email')"><i class="fas fa-edit"></i></button>
+                                <button class="pf-btn del" onclick="deleteProfileField('email')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="profile-field-edit" id="emailEdit" style="display:none;">
+                            <input type="email" id="emailInput" placeholder="your@email.com">
+                            <button class="btn btn-sm btn-primary ripple" onclick="saveProfileField('email')">Save</button>
+                            <button class="btn btn-sm btn-ghost" onclick="cancelProfileField('email')">Cancel</button>
+                        </div>
+                        <!-- Phone — numbers only -->
+                        <div class="profile-field-row">
+                            <div class="profile-field-info">
+                                <span class="profile-label">📱 Phone</span>
+                                <span class="profile-value" id="profilePhoneDisplay">Not set</span>
+                            </div>
+                            <div class="profile-field-actions">
+                                <button class="pf-btn edit" onclick="editProfileField('phone')"><i class="fas fa-edit"></i></button>
+                                <button class="pf-btn del" onclick="deleteProfileField('phone')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="profile-field-edit" id="phoneEdit" style="display:none;">
+                            <input type="tel" id="phoneInput" placeholder="+91 9876543210" pattern="[0-9+\s\-]+" oninput="validatePhoneInput(this)">
+                            <span class="field-error" id="phoneError" style="display:none;color:var(--danger);font-size:0.78rem;">Only numbers, +, spaces and - allowed.</span>
+                            <button class="btn btn-sm btn-primary ripple" onclick="saveProfileField('phone')">Save</button>
+                            <button class="btn btn-sm btn-ghost" onclick="cancelProfileField('phone')">Cancel</button>
+                        </div>
+                        <!-- Security Questions -->
+                        <div class="profile-field-row">
+                            <div class="profile-field-info">
+                                <span class="profile-label">🔐 Security Questions</span>
+                                <span class="profile-value" id="profileSecDisplay">3 questions set</span>
+                            </div>
+                            <div class="profile-field-actions">
+                                <button class="pf-btn edit" onclick="editProfileField('security')"><i class="fas fa-edit"></i></button>
+                            </div>
+                        </div>
+                        <div class="profile-field-edit" id="securityEdit" style="display:none;">
+                            <input type="text" id="editSq1q" placeholder="Security Question 1">
+                            <input type="text" id="editSq1a" placeholder="Answer 1" style="margin-top:0.3rem;">
+                            <input type="text" id="editSq2q" placeholder="Security Question 2" style="margin-top:0.3rem;">
+                            <input type="text" id="editSq2a" placeholder="Answer 2" style="margin-top:0.3rem;">
+                            <input type="text" id="editSq3q" placeholder="Security Question 3" style="margin-top:0.3rem;">
+                            <input type="text" id="editSq3a" placeholder="Answer 3" style="margin-top:0.3rem;">
+                            <button class="btn btn-sm btn-primary ripple" onclick="saveProfileField('security')">Save</button>
+                            <button class="btn btn-sm btn-ghost" onclick="cancelProfileField('security')">Cancel</button>
+                        </div>
+                    </div>
+
+                    <!-- Hobbies -->
+                    <div style="margin-top:1.2rem;">
+                        <h3 class="card-title">🎨 Hobbies</h3>
+                        <div class="input-row" style="margin-bottom:0.5rem;">
+                            <input type="text" id="hobbyInput" placeholder="Add hobby..." onkeypress="if(event.key==='Enter') addHobby()">
+                            <button class="btn btn-sm btn-primary ripple" onclick="addHobby()">+ Add</button>
+                        </div>
+                        <div class="hobby-tags" id="hobbyTags">
+                            <p class="empty-msg" style="padding:0.6rem;font-size:0.82rem;">No hobbies yet!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Settings -->
+                <div class="card">
+                    <h3 class="card-title">Settings</h3>
+
+                    <div style="margin-bottom:1.5rem;">
+                        <label class="profile-label">Change Username</label>
+                        <div class="input-row" style="margin-top:0.5rem;">
+                            <input type="text" id="changeNameInput" placeholder="New username">
+                            <button class="btn btn-primary ripple" onclick="changeUsername()">Update</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.5rem;">
+                        <label class="profile-label">Change Password</label>
+                        <div style="margin-top:0.5rem;display:flex;flex-direction:column;gap:0.4rem;">
+                            <input type="password" id="oldPasswordInput" placeholder="Current password">
+                            <input type="password" id="newPasswordInput" placeholder="New password">
+                            <button class="btn btn-primary ripple" onclick="changePassword()">Update Password</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.5rem;">
+                        <label class="profile-label">🎨 Color Theme</label>
+                        <select id="themeSelect" class="theme-select" onchange="changeTheme(this.value)" style="margin-top:0.5rem;">
+                            <option value="cream">🤍 Cream Luxury</option>
+                            <option value="sunset">🌅 Sunset Glow</option>
+                            <option value="rose">🌹 Rose Petal</option>
+                            <option value="lavender">💜 Lavender Mist</option>
+                            <option value="peach">🍑 Peach Cream</option>
+                            <option value="coral">🪸 Coral Reef</option>
+                            <option value="cherry">🌸 Cherry Blossom</option>
+                            <option value="tangerine">🍊 Tangerine</option>
+                            <option value="mauve">🪻 Mauve</option>
+                            <option value="amber">🟡 Amber Gold</option>
+                            <option value="crimson">🔴 Crimson</option>
+                        </select>
+                    </div>
+
+                    
+
+                    <div style="margin-bottom:1.5rem;">
+                        <label class="profile-label">Session</label>
+                        <button class="btn btn-warning ripple" style="width:100%;margin-top:0.5rem;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
+                    <div>
+                        <label class="profile-label">Danger Zone</label>
+                        <button class="btn btn-danger ripple" style="width:100%;margin-top:0.5rem;" onclick="resetAllData()"><i class="fas fa-trash"></i> Reset All Data</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="aura-toast" id="aura-toast"></div>
+
+<!-- Monday Reminder Popup -->
+<div class="popup-overlay" id="mondayPopup" style="display:none;">
+    <div class="popup-box">
+        <div class="popup-emoji">📅</div>
+        <h3 class="popup-title">Weekly Report Ready!</h3>
+        <p class="popup-body">It's Monday! Time to generate your weekly progress report and celebrate your wins.</p>
+        <div class="popup-actions">
+            <button class="btn btn-primary ripple" onclick="closeMondayPopup(true)"><i class="fas fa-file-pdf"></i> Generate Now</button>
+            <button class="btn btn-ghost" onclick="closeMondayPopup(false)">Maybe Later</button>
+        </div>
+    </div>
+</div>
+
+<!-- Photo View Modal -->
+<div class="popup-overlay" id="photoViewModal" style="display:none;" onclick="closePhotoModal()">
+    <div class="photo-view-box" onclick="event.stopPropagation()">
+        <img id="photoViewImg" src="" alt="Profile Photo" style="max-width:100%;max-height:80vh;border-radius:16px;">
+        <button class="popup-close-btn" onclick="closePhotoModal()"><i class="fas fa-times"></i></button>
+    </div>
+</div>
+
+<!-- Timetable Notification Popup -->
+<div class="popup-overlay" id="ttNotifPopup" style="display:none;">
+    <div class="popup-box notif-popup">
+        <div class="popup-emoji" id="ttNotifEmoji">⏰</div>
+        <h3 class="popup-title" id="ttNotifTitle">Time for your activity!</h3>
+        <p class="popup-body" id="ttNotifBody">It's time!</p>
+        <button class="btn btn-primary ripple" onclick="closeTtNotif()">Got it! ✓</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
